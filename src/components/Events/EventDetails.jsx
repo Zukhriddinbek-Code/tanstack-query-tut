@@ -8,6 +8,7 @@ import { queryClient } from "../../../util/http.js";
 import Header from "../Header.jsx";
 import { deleteEvent, fetchEvent } from "../../../util/http.js";
 import ErrorBlock from "../UI/ErrorBlock.jsx";
+import Modal from "../UI/Modal.jsx";
 
 export default function EventDetails() {
   const [isDeleting, setIsDeleting] = useState(false);
@@ -73,7 +74,7 @@ export default function EventDetails() {
         <header>
           <h1>{data.title}</h1>
           <nav>
-            <button onClick={handleDeleteBtn}>Delete</button>
+            <button onClick={handleStartDelete}>Delete</button>
             <Link to="edit">Edit</Link>
           </nav>
         </header>
@@ -96,6 +97,20 @@ export default function EventDetails() {
 
   return (
     <>
+      {isDeleting && (
+        <Modal onClose={handleStopDelete}>
+          <h2>Are you sure?</h2>
+          <p>This action cannot be undone!</p>
+          <div className="form-actions">
+            <button className="button-text" onClick={handleStopDelete}>
+              Cancel
+            </button>
+            <button className="button" onClick={handleDeleteBtn}>
+              Delete
+            </button>
+          </div>
+        </Modal>
+      )}
       <Outlet />
       <Header>
         <Link to="/events" className="nav-item">
