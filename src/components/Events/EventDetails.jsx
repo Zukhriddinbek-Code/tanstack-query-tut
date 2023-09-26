@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import { useState } from "react";
 
 import { queryClient } from "../../../util/http.js";
 import Header from "../Header.jsx";
@@ -8,6 +10,8 @@ import { deleteEvent, fetchEvent } from "../../../util/http.js";
 import ErrorBlock from "../UI/ErrorBlock.jsx";
 
 export default function EventDetails() {
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const params = useParams();
   const navigate = useNavigate();
 
@@ -26,6 +30,13 @@ export default function EventDetails() {
       navigate("/events");
     },
   });
+
+  const handleStartDelete = () => {
+    setIsDeleting(true);
+  };
+  const handleStopDelete = () => {
+    setIsDeleting(false);
+  };
 
   const handleDeleteBtn = () => {
     mutate({ id: params.id });
