@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import Modal from "../UI/Modal.jsx";
 import EventForm from "./EventForm.jsx";
-import { fetchEvent } from "../../../util/http.js";
+import { fetchEvent, updateEvent } from "../../../util/http.js";
 import LoadingIndicator from "../UI/LoadingIndicator.jsx";
 import ErrorBlock from "../UI/ErrorBlock.jsx";
 
@@ -17,9 +17,14 @@ export default function EditEvent() {
     queryFn: ({ signal }) => fetchEvent({ signal, id: params.id }),
   });
 
-  const handleUpdatebtn = () => {};
+  const { mutate } = useMutation({
+    mutationFn: updateEvent,
+  });
 
-  function handleSubmit(formData) {}
+  function handleSubmit(formData) {
+    mutate({ id: params.id, event: formData });
+    navigate("../");
+  }
 
   function handleClose() {
     navigate("../");
@@ -59,7 +64,7 @@ export default function EditEvent() {
         <Link to="../" className="button-text">
           Cancel
         </Link>
-        <button onClick={handleUpdatebtn} type="submit" className="button">
+        <button type="submit" className="button">
           Update
         </button>
       </EventForm>
