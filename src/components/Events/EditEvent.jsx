@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import Modal from "../UI/Modal.jsx";
 import EventForm from "./EventForm.jsx";
-import { fetchEvent, updateEvent } from "../../../util/http.js";
+import { fetchEvent, updateEvent, queryClient } from "../../../util/http.js";
 import LoadingIndicator from "../UI/LoadingIndicator.jsx";
 import ErrorBlock from "../UI/ErrorBlock.jsx";
 
@@ -19,6 +19,28 @@ export default function EditEvent() {
 
   const { mutate } = useMutation({
     mutationFn: updateEvent,
+
+    onMutate: async (data) => {
+      //automatically gives data we passed as an argument to mutate() fn
+      const newEvent = data.event;
+
+      await queryClient.cancelQueries({ queryKey: ["events", params.id] }); // we need to cancel all existing queries manually
+      const prevEvent = queryClient.getQueryData(["events", params.id]);
+
+      queryClient.setQueryData(["events", params.id], newEvent); // we are manipulating queries manually here, before we used invalidateQueries
+
+      return { prevEvent };
+    },
+
+    //when error old event is fetched again, old event data is get by context, by returning prevEvent in onMutate() fn
+    onError: (error, data, context) => {
+      queryClient.setQueryData(["events", params.id], context.prevEvent);
+    },
+
+    //this will run no matter mutateFn is executed successfully or not, it will run
+    onSettled: () => {
+      queryClient.invalidateQueries(["events", params.id]);
+    },
   });
 
   function handleSubmit(formData) {
