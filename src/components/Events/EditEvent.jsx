@@ -17,6 +17,8 @@ export default function EditEvent() {
     queryFn: ({ signal }) => fetchEvent({ signal, id: params.id }),
   });
 
+  const handleUpdatebtn = () => {};
+
   function handleSubmit(formData) {}
 
   function handleClose() {
@@ -57,7 +59,7 @@ export default function EditEvent() {
         <Link to="../" className="button-text">
           Cancel
         </Link>
-        <button type="submit" className="button">
+        <button onClick={handleUpdatebtn} type="submit" className="button">
           Update
         </button>
       </EventForm>
