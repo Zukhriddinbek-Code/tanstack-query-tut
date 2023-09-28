@@ -10,7 +10,7 @@ export async function fetchEvents({ signal, searchTerm, max }) {
   } else if (searchTerm) {
     url += "?search=" + searchTerm;
   } else if (max) {
-    url += "&max=" + max;
+    url += "?max=" + max;
   }
 
   const response = await fetch(url, { signal: signal });
